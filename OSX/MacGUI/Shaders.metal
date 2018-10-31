@@ -31,7 +31,7 @@ struct ProjectedVertex {
 };
 
 struct CrtParameters {
-    float4 bloomFactor;
+    float bloomFactor;
 };
 
 
@@ -335,7 +335,7 @@ kernel void blur_v(texture2d<float, access::read> inTexture [[texture(0)]],
 
 kernel void crt(texture2d<half, access::read>  inTexture   [[ texture(0) ]],
                 texture2d<half, access::write> outTexture  [[ texture(1) ]],
-                constant CrtParameters         &params     [[ buffer(2) ]],
+                constant CrtParameters         &params     [[ buffer(0) ]],
                 uint2                          gid         [[ thread_position_in_grid ]])
 {
     half4 color;
@@ -455,18 +455,26 @@ kernel void crt(texture2d<half, access::read>  inTexture   [[ texture(0) ]],
 //
 // Jim's scanline filter
 //
-// SCANLINE_SCALE scales the intensity between scanlines. Too much contrast will create moiré patterns.
-// SCANLINE_CUTOFF determines the height of the scanlines. With SCALE_FACTOR=4 native lines per C64 line,
-// SCANLINE_CUTOFF of 1 gives 75% high scanlines, and SCANLINE_CUTOFF of 2 gives 50% height scanlines.
-//
-#define SCANLINE_SCALE .5
-#define SCANLINE_CUTOFF 2
 
-kernel void scanline(texture2d<half, access::read>  inTexture   [[ texture(0) ]],
-                     texture2d<half, access::write> outTexture  [[ texture(1) ]],
+kernel void scanline(texture2d<float, access::read>  inTexture   [[ texture(0) ]],
+                     texture2d<float, access::write> outTexture  [[ texture(1) ]],
+                     texture2d<float, access::read> weights     [[texture(2)]],
+                     texture2d<float, access::read> horizontalBlur [[texture(3)]],
+                     constant CrtParameters         &params     [[ buffer(0) ]],
                      uint2                          gid         [[ thread_position_in_grid ]])
 {
-    half4 inColor = inTexture.read(uint2(gid.x, gid.y / 2));
-    outTexture.write(inColor * ((gid.y % 8) < SCANLINE_CUTOFF ? SCANLINE_SCALE : 1), gid);
+    // Get blur value
+    uint2 blurTexIndices = uint2(gid.x, gid.y / 2);
+    float4 bloomCol = blur_v(horizontalBlur, weights, blurTexIndices);
+    
+    // Bloom
+    bloomCol *= bloomCol * 3;
+    
+    // Get scanline texture
+    float4 scanlines = gid.y % 8 < 4 ? inTexture.read(uint2(gid.x, gid.y / 2)) : float4(0, 0, 0, 0);
+
+    // Mix bloom and scanlines
+    float s = .7;
+    outTexture.write(scanlines * s + bloomCol * (1 - s), gid);
 }
 

@@ -47,7 +47,8 @@ class ComputeKernel : NSObject {
     var samplerLinear : MTLSamplerState!
     var samplerNearest : MTLSamplerState!
     var preBlurTexture: MTLTexture!
-    
+    var blurWeightTexture: MTLTexture!
+
     func isPreBlurRequired() -> Bool {
         return false;
     }
@@ -134,6 +135,9 @@ class ComputeKernel : NSObject {
             encoder.setComputePipelineState(kernel)
             encoder.setTexture(source, index: 0)
             encoder.setTexture(target, index: 1)
+            if (blurWeightTexture != nil) {
+                encoder.setTexture(blurWeightTexture, index: 2)
+            }
             if (preBlurTexture != nil) {
                 encoder.setTexture(preBlurTexture, index: 3);
             }
@@ -142,6 +146,46 @@ class ComputeKernel : NSObject {
             encoder.dispatchThreadgroups(threadgroupCount, threadsPerThreadgroup: threadgroupSize)
             encoder.endEncoding()
         }
+    }
+    
+    func getBlurWeights(device: MTLDevice, radius: Float) {
+        // Build blur weight texture
+        let sigma: Float = radius / 2.0
+        let size:  Int   = Int(round(radius) * 2 + 1)
+        
+        var delta: Float = 0.0;
+        var expScale: Float = 0.0
+        
+        if (radius > 0.0) {
+            delta = (radius * 2) / Float(size - 1)
+            expScale = -1.0 / (2 * sigma * sigma)
+        }
+        
+        let weights = UnsafeMutablePointer<Float>.allocate(capacity: size)
+        
+        var weightSum: Float = 0.0;
+        
+        var x = -radius
+        for i in 0 ..< size {
+            let weight = expf((x * x) * expScale)
+            weights[i] = weight
+            weightSum += weight
+            x += delta
+        }
+        
+        let weightScale: Float = 1.0 / weightSum
+        for j in 0 ..< size {
+            weights[j] *= weightScale;
+        }
+        
+        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: MTLPixelFormat.r32Float, width: size, height: 1, mipmapped: false)
+        
+        blurWeightTexture = device.makeTexture(descriptor: textureDescriptor)!
+        
+        let region = MTLRegionMake2D(0, 0, size, 1)
+        blurWeightTexture.replace(region: region, mipmapLevel: 0, withBytes: weights, bytesPerRow: size * 4 /* size of float */)
+        
+        weights.deallocate()
     }
 }
 
@@ -207,95 +251,68 @@ class SmoothFilter : ComputeKernel {
 
 class BlurFilter : ComputeKernel {
     
-    var blurWeightTexture: MTLTexture!
-
     convenience init?(name: String, device: MTLDevice, library: MTLLibrary, radius: Float) {
         self.init(name: name, device: device, library: library)
-    
-        // Build blur weight texture
-        let sigma: Float = radius / 2.0
-        let size:  Int   = Int(round(radius) * 2 + 1)
-    
-        var delta: Float = 0.0;
-        var expScale: Float = 0.0
-        
-        if (radius > 0.0) {
-            delta = (radius * 2) / Float(size - 1)
-            expScale = -1.0 / (2 * sigma * sigma)
-        }
-    
-        let weights = UnsafeMutablePointer<Float>.allocate(capacity: size)
-        
-        var weightSum: Float = 0.0;
-        
-        var x = -radius
-        for i in 0 ..< size {
-            let weight = expf((x * x) * expScale)
-            weights[i] = weight
-            weightSum += weight
-            x += delta
-        }
-        
-        let weightScale: Float = 1.0 / weightSum
-        for j in 0 ..< size {
-            weights[j] *= weightScale;
-        }
-    
-        let textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: MTLPixelFormat.r32Float, width: size, height: 1, mipmapped: false)
-    
-        blurWeightTexture = device.makeTexture(descriptor: textureDescriptor)!
-        
-        let region = MTLRegionMake2D(0, 0, size, 1)
-        blurWeightTexture.replace(region: region, mipmapLevel: 0, withBytes: weights, bytesPerRow: size * 4 /* size of float */)
-    
-        weights.deallocate()
+        getBlurWeights(device: device, radius: radius)
     }
     
     override func isPreBlurRequired() -> Bool {
         return true;
     }
-    
-    override func configureComputeCommandEncoder(encoder: MTLComputeCommandEncoder) {
-        encoder.setTexture(blurWeightTexture, index: 2)
-    }
 }
 
 class CrtFilter : ComputeKernel {
     
-    var _bloomingFactor : Float = 1.0
-    var bloom: MTLBuffer!
+    private var crtParameters: CrtParameters!
+    
+    struct CrtParameters {
+        var bloomingFactor: Float
+    }
     
     func setBloomingFactor(_ value : Float) {
-        
-        _bloomingFactor = value;
-        var _alpha : Float = 0.0
-        
-        let contents = bloom.contents()
-        memcpy(contents, &_bloomingFactor, 4)
-        memcpy(contents + 4, &_bloomingFactor, 4)
-        memcpy(contents + 8, &_bloomingFactor, 4)
-        memcpy(contents + 12, &_alpha, 4)
+        crtParameters.bloomingFactor = value
+    }
+    
+    func bloomingFactor() -> Float {
+        return crtParameters.bloomingFactor
     }
     
     convenience init?(device: MTLDevice, library: MTLLibrary) {
 
         self.init(name: "crt", device: device, library: library)
-        self.bloom = device.makeBuffer(length: 16, options: .storageModeShared)
-        
-        setBloomingFactor(1.0)
+        self.crtParameters = CrtParameters(bloomingFactor: 1.0);
     }
     
     override func configureComputeCommandEncoder(encoder: MTLComputeCommandEncoder) {
-        
-        encoder.setBuffer(bloom, offset: 0, index: 2)
+        encoder.setBytes(&crtParameters, length: MemoryLayout<CrtParameters>.stride, index: 0);
     }
     
 }
 
 class ScanlineFilter : ComputeKernel {
     
+    private var crtParameters: CrtParameters!
+    
+    struct CrtParameters {
+        var bloomingFactor: Float
+    }
+    
+    func setBloomingFactor(_ value : Float) {
+        crtParameters.bloomingFactor = value
+    }
+    
+    override func isPreBlurRequired() -> Bool {
+        return true;
+    }
+    
     convenience init?(device: MTLDevice, library: MTLLibrary) {
         self.init(name: "scanline", device: device, library: library)
+        self.crtParameters = CrtParameters(bloomingFactor: 1.0);
         sampler = samplerLinear
+        getBlurWeights(device: device, radius: 4.0)
+    }
+    
+    override func configureComputeCommandEncoder(encoder: MTLComputeCommandEncoder) {
+        encoder.setBytes(&crtParameters, length: MemoryLayout<CrtParameters>.stride, index: 0);
     }
 }

@@ -115,7 +115,7 @@ class EmulatorPrefsController : UserDialogController {
         brightnessSlider.doubleValue = document.c64.vic.brightness()
         contrastSlider.doubleValue = document.c64.vic.contrast()
         saturationSlider.doubleValue = document.c64.vic.saturation()
-        bloomingSlider.floatValue = crtFilter._bloomingFactor
+        bloomingSlider.floatValue = crtFilter.bloomingFactor()
         palette.selectItem(withTag: document.c64.vic.videoPalette())
         upscaler.selectItem(withTag: parent.metalScreen.videoUpscaler)
         filter.selectItem(withTag: parent.metalScreen.videoFilter)
@@ -281,6 +281,8 @@ class EmulatorPrefsController : UserDialogController {
         track("Bloom factor = \(sender.doubleValue)")
         let crtFilter = parent.metalScreen.filters[3] as! CrtFilter
         crtFilter.setBloomingFactor(sender.floatValue)
+        let scanlineFilter = parent.metalScreen.filters[4] as! ScanlineFilter
+        scanlineFilter.setBloomingFactor(sender.floatValue)
         update()
     }
     
