@@ -8,9 +8,11 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="EmulatorPrefsController" customModule="VirtualC64" customModuleProvider="target">
             <connections>
+                <outlet property="_bloomRadiusSlider" destination="sm1-Mi-5xn" id="pjR-aE-nbG"/>
                 <outlet property="aspectRatioButton" destination="b83-5Y-HZf" id="JTq-ge-uBk"/>
                 <outlet property="autoMount" destination="PUa-Ci-VYH" id="ftj-sZ-YSR"/>
                 <outlet property="autoSnapshots" destination="C5o-Wm-bLH" id="ud5-kg-xDo"/>
+                <outlet property="bloomRadiusSlider" destination="sm1-Mi-5xn" id="jUR-ix-Dtx"/>
                 <outlet property="bloomingSlider" destination="V1l-Ao-46d" id="W6g-0R-4Us"/>
                 <outlet property="blurSlider" destination="P4W-6z-69X" id="etn-Al-Zre"/>
                 <outlet property="brightnessSlider" destination="sSm-AO-usU" id="ZYH-Tb-aCA"/>
@@ -305,7 +307,7 @@ DQ
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                         <sliderCell key="cell" continuous="YES" refusesFirstResponder="YES" alignment="left" maxValue="1" sliderType="circular" id="tqB-EK-8MU"/>
                         <connections>
-                            <action selector="scanlineBrightnessAction:" target="-2" id="TNB-ir-PPZ"/>
+                            <action selector="bloomBrightnessAction:" target="-2" id="tUh-Jp-GtM"/>
                         </connections>
                     </slider>
                     <slider horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zx7-mh-HWZ">
@@ -611,6 +613,14 @@ Gw
                             </connections>
                         </buttonCell>
                     </button>
+                    <slider horizontalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CFs-TV-Ufh" userLabel="Bloom Radius">
+                        <rect key="frame" x="128" y="354" width="19" height="96"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <sliderCell key="cell" alignment="left" maxValue="10" doubleValue="10" tickMarkPosition="right" sliderType="linear" id="sm1-Mi-5xn"/>
+                        <connections>
+                            <action selector="bloomRadiusAction:" target="-2" id="HnQ-gr-Qwb"/>
+                        </connections>
+                    </slider>
                 </subviews>
             </view>
             <connections>

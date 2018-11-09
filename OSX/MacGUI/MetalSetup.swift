@@ -184,8 +184,8 @@ public extension MetalView {
     func fillFragmentShaderUniforms(_ buffer: MTLBuffer?) {
         
         var _s = 0  // TODO remove
-        var _sb = scanlineBrightness
-        var _sw = scanlineWeight
+        var _sb = bloomBrightness
+        var _sw = bloomRadius
         var _bf = bloomFactor
         var _m = dotMask
         var _dmb = maskBrightness

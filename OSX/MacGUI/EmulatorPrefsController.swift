@@ -36,7 +36,7 @@ class EmulatorPrefsController : UserDialogController {
     @IBOutlet weak var blurSlider: NSSlider!
     @IBOutlet weak var dotMask: NSPopUpButton!
     @IBOutlet weak var scanlineBrightnessSlider: NSSlider!
-    @IBOutlet weak var scanlineWeightSlider: NSSlider!
+    @IBOutlet weak var bloomRadiusSlider: NSSliderCell!
     @IBOutlet weak var bloomingSlider: NSSlider!
     @IBOutlet weak var maskBrightnessSlider: NSSlider!
 
@@ -84,17 +84,15 @@ class EmulatorPrefsController : UserDialogController {
         colorWell14.color = c64.vic.color(14)
         colorWell15.color = c64.vic.color(15)
 
-        // Texture processor
+        // Video
         scanlineButton.state = parent.metalScreen.scanlinesEnabled ? .on : .off
         brightnessSlider.doubleValue = document.c64.vic.brightness()
         contrastSlider.doubleValue = document.c64.vic.contrast()
         saturationSlider.doubleValue = document.c64.vic.saturation()
         blurSlider.doubleValue = Double(parent.metalScreen.blurFactor)
-
-        // Effect engine
+        bloomRadiusSlider.doubleValue = Double(parent.metalScreen.bloomRadius)
         dotMask.selectItem(withTag: parent.metalScreen.dotMask)
-        scanlineBrightnessSlider.floatValue = parent.metalScreen.scanlineBrightness
-        scanlineWeightSlider.floatValue = parent.metalScreen.scanlineWeight
+        scanlineBrightnessSlider.floatValue = parent.metalScreen.bloomBrightness
         bloomingSlider.floatValue = parent.metalScreen.bloomFactor
         maskBrightnessSlider.floatValue = parent.metalScreen.maskBrightness
 
@@ -186,17 +184,17 @@ class EmulatorPrefsController : UserDialogController {
         update()
     }
     
-    @IBAction func scanlineBrightnessAction(_ sender: NSSlider!) {
+    @IBAction func bloomBrightnessAction(_ sender: NSSlider!) {
         
-        track("New scanline brightness = \(sender.doubleValue)")
-        parent.metalScreen.scanlineBrightness = sender.floatValue
+        track("New bloom brightness = \(sender.doubleValue)")
+        parent.metalScreen.bloomBrightness = sender.floatValue
         update()
     }
 
-    @IBAction func scanlineWeightAction(_ sender: NSSlider!) {
+    @IBAction func bloomRadiusAction(_ sender: NSSlider!) {
         
-        track("New scanline weight = \(sender.doubleValue)")
-        parent.metalScreen.scanlineWeight = sender.floatValue
+        track("New bloom radius = \(sender.doubleValue)")
+        parent.metalScreen.bloomRadius = sender.floatValue
         update()
     }
 
@@ -304,17 +302,17 @@ class EmulatorPrefsController : UserDialogController {
         c64.vic.setVideoPalette(EmulatorDefaults.palette)
 
         // Texture processor
-        parent.metalScreen.scanlinesEnabled = EmulatorDefaults.scanlines
+        parent.metalScreen.scanlinesEnabled = EmulatorDefaults.scanlinesEnabled
         c64.vic.setBrightness(EmulatorDefaults.brightness)
         c64.vic.setContrast(EmulatorDefaults.contrast)
         c64.vic.setSaturation(EmulatorDefaults.saturation)
         parent.metalScreen.blurFactor = EmulatorDefaults.blur
         
         // Effect engine
-        parent.metalScreen.scanlinesEnabled = EmulatorDefaults.scanlines
+        parent.metalScreen.scanlinesEnabled = EmulatorDefaults.scanlinesEnabled
         parent.metalScreen.dotMask = EmulatorDefaults.dotMask
-        parent.metalScreen.scanlineBrightness = EmulatorDefaults.scanlineBrightness
-        parent.metalScreen.scanlineWeight = EmulatorDefaults.scanlineWeight
+        parent.metalScreen.bloomBrightness = EmulatorDefaults.bloomBrightness
+        parent.metalScreen.bloomRadius = EmulatorDefaults.bloomRadius
         parent.metalScreen.bloomFactor = EmulatorDefaults.bloomFactor
         parent.metalScreen.maskBrightness = EmulatorDefaults.maskBrightness
             

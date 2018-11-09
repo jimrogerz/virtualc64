@@ -101,9 +101,8 @@ public class MetalView: MTKView {
     var blurFilter: GaussFilter! = nil
     
     // Shader parameters
-    var scanlinesEnabled = EmulatorDefaults.scanlines
-    var scanlineBrightness = EmulatorDefaults.scanlineBrightness
-    var scanlineWeight = EmulatorDefaults.scanlineWeight
+    var scanlinesEnabled = EmulatorDefaults.scanlinesEnabled
+    var bloomBrightness = EmulatorDefaults.bloomBrightness
     var bloomFactor = EmulatorDefaults.bloomFactor
     var dotMask = EmulatorDefaults.dotMask
     var maskBrightness = EmulatorDefaults.maskBrightness
@@ -111,6 +110,12 @@ public class MetalView: MTKView {
     var blurFactor = EmulatorDefaults.blur {
         didSet {
             guassFilter?.sigma = blurFactor
+        }
+    }
+    
+    var bloomRadius = EmulatorDefaults.bloomRadius {
+        didSet {
+            blurFilter?.sigma = bloomRadius
         }
     }
     
