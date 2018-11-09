@@ -120,9 +120,7 @@ public extension MetalView {
         
         // Build upscalers
         upscalers[0] = BypassUpscaler.init(width: 2048, height: 2048, device: device!, library: library)
-        upscalers[1] = EPXUpscaler.init(width: 2048, height: 2048, device: device!, library: library)
-        upscalers[2] = XBRUpscaler.init(width: 2048, height: 2048, device: device!, library: library)
-        upscalers[3] = ScanlineUpscaler.init(width: 2048, height: 2048, device: device!, library: library)
+        upscalers[1] = ScanlineUpscaler.init(width: 2048, height: 2048, device: device!, library: library)
 
         // Build filters
         filters[0] = BypassFilter.init(width: 2048, height: 2048, device: device!, library: library)

@@ -89,10 +89,10 @@ public class MetalView: MTKView {
     var depthTexture: MTLTexture! = nil
 
     // Array holding all available upscalers
-    var upscalers = [ComputeKernel?](repeating: nil, count: 4)
+    var upscalers = [ComputeKernel?](repeating: nil, count: 2)
  
     // Array holding all available filters
-    var filters = [ComputeKernel?](repeating: nil, count: 5)
+    var filters = [ComputeKernel?](repeating: nil, count: 2)
     
     /// Filter for vertical blur stage
     var blurFilter: GaussFilter! = nil
