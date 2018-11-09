@@ -258,7 +258,7 @@ public extension MetalView
         var wallpaper: NSImage?
         if cgImage != nil {
             wallpaper = NSImage.init(cgImage: cgImage!, size: NSZeroSize)
-            wallpaper = wallpaper?.expand(toSize: NSSize(width: 1024, height: 512))
+            wallpaper = wallpaper?.expand(toSize: NSSize(width: 512, height: 512))
         } else {
             // Fall back to an opaque gray background
             let size = NSSize(width: 128, height: 128)

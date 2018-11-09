@@ -219,6 +219,9 @@
                                     <menuItem title="None" state="on" id="6p3-rD-cKA">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
+                                    <menuItem title="Scanline" tag="3" id="vlI-bc-gRl">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
                                     <menuItem title="2x (EPX)" tag="1" id="TCS-bs-k5N">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
@@ -274,18 +277,18 @@
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1t5-RU-6d2">
                         <rect key="frame" x="91" y="294" width="186" height="26"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                        <popUpButtonCell key="cell" type="push" title="None" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" refusesFirstResponder="YES" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" autoenablesItems="NO" selectedItem="fOR-kz-MOj" id="8XX-1m-R3o">
+                        <popUpButtonCell key="cell" type="push" title="None" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" refusesFirstResponder="YES" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" autoenablesItems="NO" selectedItem="fOR-kz-MOj" id="8XX-1m-R3o">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="menu"/>
                             <menu key="menu" title="OtherViews" autoenablesItems="NO" id="OZd-G2-ZdV">
                                 <items>
-                                    <menuItem title="None" id="fOR-kz-MOj">
+                                    <menuItem title="None" state="on" id="fOR-kz-MOj">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
                                     <menuItem title="Bisected" tag="1" id="FkO-0L-7n2">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
-                                    <menuItem title="Trisected" state="on" tag="2" id="Whu-Hm-DRa">
+                                    <menuItem title="Trisected" tag="2" id="Whu-Hm-DRa">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
                                     <menuItem title="Bisected and shifted" tag="3" id="xPc-RA-O4Y">

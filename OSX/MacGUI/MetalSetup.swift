@@ -85,6 +85,11 @@ public extension MetalView {
         emulatorTexture = device?.makeTexture(descriptor: descriptor)
         precondition(emulatorTexture != nil, "Failed to create emulator texture")
         
+        // Fully blurred emulator texture
+        descriptor.usage = [.shaderRead, .shaderWrite]
+        blurredTexture = device?.makeTexture(descriptor: descriptor)
+        precondition(blurredTexture != nil, "Failed to create blurred texture")
+        
         // Upscaled C64 texture
         descriptor = MTLTextureDescriptor.texture2DDescriptor(
             pixelFormat: MTLPixelFormat.rgba8Unorm,
@@ -111,14 +116,17 @@ public extension MetalView {
         precondition(device != nil)
         precondition(library != nil)
         
-        // Build upscalers
-        upscalers[0] = BypassUpscaler.init(device: device!, library: library)
-        upscalers[1] = EPXUpscaler.init(device: device!, library: library)
-        upscalers[2] = XBRUpscaler.init(device: device!, library: library)
+        blurFilter = GaussFilter.init(width: 512, height: 512, device: device!, library: library, sigma: 1.0)
         
+        // Build upscalers
+        upscalers[0] = BypassUpscaler.init(width: 2048, height: 2048, device: device!, library: library)
+        upscalers[1] = EPXUpscaler.init(width: 2048, height: 2048, device: device!, library: library)
+        upscalers[2] = XBRUpscaler.init(width: 2048, height: 2048, device: device!, library: library)
+        upscalers[3] = ScanlineUpscaler.init(width: 2048, height: 2048, device: device!, library: library)
+
         // Build filters
-        filters[0] = BypassFilter.init(device: device!, library: library)
-        filters[1] = GaussFilter.init(device: device!, library: library, sigma: 1.0)
+        filters[0] = BypassFilter.init(width: 2048, height: 2048, device: device!, library: library)
+        filters[1] = GaussFilter.init(width: 2048, height: 2048, device: device!, library: library, sigma: 1.0)
     }
     
     func buildBuffers() {

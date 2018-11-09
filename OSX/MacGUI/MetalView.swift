@@ -61,6 +61,10 @@ public class MetalView: MTKView {
     /// Background image behind the cube
     var bgTexture: MTLTexture! = nil
     
+    //! Blurred texture
+    /*! A fully blurred emulator texture. */
+    var blurredTexture: MTLTexture! = nil
+    
     /// Raw texture data provided by the emulator
     /// Texture is updated in updateTexture which is called periodically in
     /// drawRect
@@ -85,10 +89,13 @@ public class MetalView: MTKView {
     var depthTexture: MTLTexture! = nil
 
     // Array holding all available upscalers
-    var upscalers = [ComputeKernel?](repeating: nil, count: 3)
+    var upscalers = [ComputeKernel?](repeating: nil, count: 4)
  
     // Array holding all available filters
     var filters = [ComputeKernel?](repeating: nil, count: 5)
+    
+    /// Filter for vertical blur stage
+    var blurFilter: GaussFilter! = nil
     
     // Shader parameters
     var scanlines = EmulatorDefaults.scanlines
@@ -303,6 +310,11 @@ public class MetalView: MTKView {
                        source: emulatorTexture,
                        target: upscaledTexture)
     
+        // Blur emulator texture
+        blurFilter.apply(commandBuffer: commandBuffer,
+                        source: emulatorTexture,
+                        target: blurredTexture)
+        
         // Filter the upscaled texture (apply blur effect)
         let filter = currentFilter()
         filter.apply(commandBuffer: commandBuffer,
@@ -326,6 +338,7 @@ public class MetalView: MTKView {
         commandEncoder.setRenderPipelineState(pipeline)
         commandEncoder.setDepthStencilState(depthState)
         commandEncoder.setFragmentTexture(bgTexture, index: 0)
+        commandEncoder.setFragmentTexture(blurredTexture, index: 1)
         commandEncoder.setFragmentSamplerState(filter.getsampler(), index: 0)
         commandEncoder.setFragmentBuffer(uniformFragment, offset: 0, index: 0)
         commandEncoder.setVertexBuffer(positionBuffer, offset: 0, index: 0)
@@ -337,6 +350,7 @@ public class MetalView: MTKView {
     
         // Render quad
         commandEncoder.setFragmentTexture(filteredTexture, index: 0)
+        commandEncoder.setFragmentTexture(blurredTexture, index: 1)
         commandEncoder.setVertexBuffer(uniformBuffer2D, offset: 0, index: 1)
         commandEncoder.drawPrimitives(type: MTLPrimitiveType.triangle,
                                       vertexStart: 42,
@@ -364,6 +378,7 @@ public class MetalView: MTKView {
         // Render background
         if drawBackground {
             commandEncoder.setFragmentTexture(bgTexture, index: 0)
+            commandEncoder.setFragmentTexture(bgTexture, index: 1)
             commandEncoder.setVertexBuffer(uniformBufferBg, offset: 0, index: 1)
             commandEncoder.drawPrimitives(type: MTLPrimitiveType.triangle,
                                           vertexStart: 0,
@@ -374,13 +389,14 @@ public class MetalView: MTKView {
         // Render cube
         if drawC64texture {
             commandEncoder.setFragmentTexture(filteredTexture, index: 0)
+            commandEncoder.setFragmentTexture(blurredTexture, index: 1)
             commandEncoder.setVertexBuffer(uniformBuffer3D, offset: 0, index: 1)
             commandEncoder.drawPrimitives(type: MTLPrimitiveType.triangle,
                                           vertexStart: 6,
                                           vertexCount: (animates ? 24 : 6),
                                           instanceCount: 1)
         }
-                
+
         endFrame()
     }
 

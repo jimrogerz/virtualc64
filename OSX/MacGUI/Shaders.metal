@@ -54,21 +54,9 @@ vertex ProjectedVertex vertex_main(device InVertex *vertices [[buffer(0)]],
     return out;
 }
 
-float4 scanlineWeight(uint2 pixel, float weight, float brightness, float bloom) {
-    
-    // Calculate distance to nearest scanline
-    float dy = ((float(pixel.y % 6) - 2.5) / 2.5) / 4;
-    
-    // Calculate scanline weight
-    float scanlineWeight = max(1.0 - dy * dy * weight, brightness);
-    
-    // Apply bloom effect an return
-    return scanlineWeight * bloom;
-}
-
 float4 dotMaskWeight(int dotmaskType, uint2 pixel, float brightness) {
     
-    float shadow = brightness * brightness;
+    float shadow = 0;//brightness * brightness;
     
     switch (dotmaskType) {
             
@@ -104,6 +92,7 @@ float4 dotMaskWeight(int dotmaskType, uint2 pixel, float brightness) {
 
 fragment half4 fragment_main(ProjectedVertex vert [[stage_in]],
                              texture2d<float, access::sample> texture [[texture(0)]],
+                             texture2d<float, access::sample> blur [[texture(1)]],
                              constant FragmentUniforms &uniforms [[buffer(0)]],
                              sampler texSampler [[sampler(0)]])
 {
@@ -112,14 +101,9 @@ fragment half4 fragment_main(ProjectedVertex vert [[stage_in]],
     // Read fragment from texture
     float2 tc = float2(vert.texCoords.x, vert.texCoords.y);
     float4 color = texture.sample(texSampler, tc);
-    
-    // Apply scanline effect
-    if (uniforms.scanline == 1) {
-        color *= scanlineWeight(pixel,
-                                uniforms.scanlineWeight,
-                                uniforms.scanlineBrightness,
-                                uniforms.bloomFactor);
-    }
+    float4 bloomCol = blur.sample(texSampler, tc);
+    bloomCol = pow(bloomCol, uniforms.bloomFactor);
+    color = saturate(color + bloomCol * uniforms.scanlineBrightness);
     
     // Apply dot mask effect
     color *= dotMaskWeight(uniforms.mask, pixel, uniforms.maskBrightness);
@@ -138,6 +122,18 @@ kernel void bypassupscaler(texture2d<half, access::read>  inTexture   [[ texture
 {
     half4 result = inTexture.read(uint2(gid.x / SCALE_FACTOR, gid.y / SCALE_FACTOR));
     outTexture.write(result, gid);
+}
+
+//
+// Scanline upscaler
+//
+//
+kernel void scanline_upscaler(texture2d<half, access::read>  inTexture   [[ texture(0) ]],
+                              texture2d<half, access::write> outTexture  [[ texture(1) ]],
+                              uint2                          gid         [[ thread_position_in_grid ]])
+{
+    half4 color = (gid.y % SCALE_FACTOR) >= SCALE_FACTOR / 2 ? inTexture.read(uint2(gid.x / SCALE_FACTOR, gid.y / SCALE_FACTOR)) : half4(0, 0, 0, 0);
+    outTexture.write(color, gid);
 }
 
 
@@ -330,3 +326,25 @@ kernel void bypass(texture2d<half, access::read>  inTexture   [[ texture(0) ]],
     half4 result = inTexture.read(uint2(gid.x, gid.y));
     outTexture.write(result, gid);
 }
+
+/*
+kernel void bloom(texture2d<float, access::sample>  inTexture   [[ texture(0) ]],
+                  texture2d<float, access::write> outTexture  [[ texture(1) ]],
+                  texture2d<float, access::sample> blur [[texture(3)]],
+                  constant CrtParameters         &params     [[ buffer(0) ]],
+                  uint2                          gid         [[ thread_position_in_grid ]])
+{
+    constexpr sampler _sampler(coord::normalized,
+                               address::repeat,
+                               filter::linear);
+    // Get blur value
+    float2 uv = float2(gid.x, gid.y);
+    uv.x /= outTexture.get_width();
+    uv.y /= outTexture.get_height();
+    float4 bloomCol = blur.sample(_sampler, uv);
+    
+    bloomCol = pow(bloomCol, 1.5);
+    
+    float4 outColor = inTexture.read(gid);
+    outTexture.write(saturate(outColor + bloomCol * params.bloomFactor), gid);
+}*/
