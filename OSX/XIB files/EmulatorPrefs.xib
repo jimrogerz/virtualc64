@@ -43,7 +43,6 @@
                 <outlet property="saturationSlider" destination="GPi-83-wzn" id="Oyo-n0-Dyv"/>
                 <outlet property="scanlineBrightnessSlider" destination="6bg-jg-6dI" id="O1f-ar-YPS"/>
                 <outlet property="scanlineWeightSlider" destination="bhx-8p-6VF" id="5dB-hA-oHG"/>
-                <outlet property="scanlines" destination="rqp-Ev-E4G" id="YWU-Yd-OSZ"/>
                 <outlet property="snapshotInterval" destination="Hkd-vs-kdQ" id="1yS-ly-Jej"/>
                 <outlet property="upscaler" destination="PJx-0D-Gl7" id="ZM9-we-YZd"/>
                 <outlet property="warpLoad" destination="Vu3-m1-w6G" id="rln-rI-9of"/>
@@ -227,36 +226,6 @@
                         </popUpButtonCell>
                         <connections>
                             <action selector="upscalerAction:" target="-2" id="aM3-yE-6KU"/>
-                        </connections>
-                    </popUpButton>
-                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jUI-uK-G2f">
-                        <rect key="frame" x="19" y="332" width="70" height="17"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" alignment="right" title="Scanlines:" id="z71-hJ-2UJ">
-                            <font key="font" metaFont="system"/>
-                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                    </textField>
-                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rqp-Ev-E4G">
-                        <rect key="frame" x="91" y="325" width="186" height="26"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                        <popUpButtonCell key="cell" type="push" title="None" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" refusesFirstResponder="YES" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" autoenablesItems="NO" selectedItem="tn7-rz-jm3" id="8Hz-95-gQM">
-                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu"/>
-                            <menu key="menu" title="OtherViews" autoenablesItems="NO" id="iBz-au-xvq">
-                                <items>
-                                    <menuItem title="None" state="on" id="tn7-rz-jm3">
-                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                    </menuItem>
-                                    <menuItem title="Yes" tag="1" id="EFM-xi-KNs">
-                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                    </menuItem>
-                                </items>
-                            </menu>
-                        </popUpButtonCell>
-                        <connections>
-                            <action selector="scanlinesAction:" target="-2" id="R3S-Ut-2be"/>
                         </connections>
                     </popUpButton>
                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0Bb-IP-wG8">
