@@ -126,28 +126,6 @@ class BypassUpscaler : ComputeKernel {
     }
 }
 
-class EPXUpscaler : ComputeKernel {
-    
-    convenience init?(width: Int, height: Int, device: MTLDevice, library: MTLLibrary) {
-        
-        self.init(name: "epxupscaler", width: width, height: height, device: device, library: library)
-        
-        // Replace default texture sampler
-        sampler = samplerNearest
-    }
-}
-
-class XBRUpscaler : ComputeKernel {
-    
-    convenience init?(width: Int, height: Int, device: MTLDevice, library: MTLLibrary)
-    {
-        self.init(name: "xbrupscaler", width: width, height: height, device: device, library: library)
-        
-        // Replace default texture sampler
-        sampler = samplerNearest
-    }
-}
-
 class ScanlineUpscaler : ComputeKernel {
     
     convenience init?(width: Int, height: Int, device: MTLDevice, library: MTLLibrary)
