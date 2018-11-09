@@ -219,13 +219,7 @@
                                     <menuItem title="None" state="on" id="6p3-rD-cKA">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
-                                    <menuItem title="Scanline" tag="3" id="vlI-bc-gRl">
-                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                    </menuItem>
-                                    <menuItem title="2x (EPX)" tag="1" id="TCS-bs-k5N">
-                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                    </menuItem>
-                                    <menuItem title="4x (xBR)" tag="2" id="LuS-g1-E2J">
+                                    <menuItem title="Scanline" tag="1" id="vlI-bc-gRl">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                     </menuItem>
                                 </items>
