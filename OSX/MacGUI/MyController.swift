@@ -10,12 +10,11 @@ import Foundation
 struct EmulatorDefaults {
     static let palette = Int(COLOR_PALETTE.rawValue)
     static let upscaler = 0
-    static let filter = 1
     static let brightness = Double(50.0)
     static let contrast = Double(100.0)
     static let saturation = Double(50.0)
     static let blur = Float(1.5)
-    static let scanlines = 1
+    static let scanlines = true
     static let dotMask = 1
     static let scanlineBrightness = Float(0.12)
     static let scanlineWeight = Float(6.0)

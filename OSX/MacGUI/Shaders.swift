@@ -141,15 +141,6 @@ class ScanlineUpscaler : ComputeKernel {
 // Filters
 //
 
-class BypassFilter : ComputeKernel {
-    
-    convenience init?(width: Int, height: Int, device: MTLDevice, library: MTLLibrary) {
-        
-        self.init(name: "bypass", width: width, height: height, device: device, library: library)
-        sampler = samplerLinear
-    }
-}
-
 class GaussFilter : ComputeKernel {
     
     var device : MTLDevice!

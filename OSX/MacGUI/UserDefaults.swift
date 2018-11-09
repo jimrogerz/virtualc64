@@ -36,7 +36,6 @@ struct VC64Keys {
     static let videoPalette       = "VC64PaletteKey"
 
     static let videoUpscaler      = "VC64UpscalerKey"
-    static let videoFilter        = "VC64FilterKey"
     static let brightness         = "VC64BrightnessKey"
     static let contrast           = "VC64ContrastKey"
     static let saturation         = "VC64SaturationKey"
@@ -134,7 +133,6 @@ extension MyController {
             VC64Keys.videoPalette: EmulatorDefaults.palette,
             
             VC64Keys.videoUpscaler: EmulatorDefaults.upscaler,
-            VC64Keys.videoFilter: EmulatorDefaults.filter,
             VC64Keys.brightness: EmulatorDefaults.brightness,
             VC64Keys.contrast: EmulatorDefaults.contrast,
             VC64Keys.saturation: EmulatorDefaults.saturation,
@@ -257,15 +255,13 @@ extension MyController {
         c64.vic.setVideoPalette(defaults.integer(forKey: VC64Keys.videoPalette))
         
         // Texture
-        metalScreen.videoUpscaler = defaults.integer(forKey: VC64Keys.videoUpscaler)
-        metalScreen.videoFilter = defaults.integer(forKey: VC64Keys.videoFilter)
         c64.vic.setBrightness(defaults.double(forKey: VC64Keys.brightness))
         c64.vic.setContrast(defaults.double(forKey: VC64Keys.contrast))
         c64.vic.setSaturation(defaults.double(forKey: VC64Keys.saturation))
         metalScreen.blurFactor = defaults.float(forKey: VC64Keys.blur)
         
         // Effects
-        metalScreen.scanlines = defaults.integer(forKey: VC64Keys.scanlines)
+        metalScreen.scanlinesEnabled = defaults.bool(forKey: VC64Keys.scanlines)
         metalScreen.scanlineBrightness = defaults.float(forKey: VC64Keys.scanlineBrightness)
         metalScreen.scanlineWeight = defaults.float(forKey: VC64Keys.scanlineWeight)
         metalScreen.bloomFactor = defaults.float(forKey: VC64Keys.bloomFactor)
@@ -406,20 +402,17 @@ extension MyController {
         defaults.set(c64.vic.videoPalette(), forKey: VC64Keys.videoPalette)
         
         // Texture
-        defaults.set(metalScreen.videoUpscaler, forKey: VC64Keys.videoUpscaler)
-        defaults.set(metalScreen.videoFilter, forKey: VC64Keys.videoFilter)
         defaults.set(c64.vic.brightness(), forKey: VC64Keys.brightness)
         defaults.set(c64.vic.contrast(), forKey: VC64Keys.contrast)
         defaults.set(c64.vic.saturation(), forKey: VC64Keys.saturation)
         defaults.set(metalScreen.blurFactor, forKey: VC64Keys.blur)
 
         // Effects
-        defaults.set(metalScreen.scanlines, forKey: VC64Keys.scanlines)
+        defaults.set(metalScreen.scanlinesEnabled, forKey: VC64Keys.scanlines)
         defaults.set(metalScreen.scanlineBrightness, forKey: VC64Keys.scanlineBrightness)
         defaults.set(metalScreen.scanlineWeight, forKey: VC64Keys.scanlineWeight)
         defaults.set(metalScreen.bloomFactor, forKey: VC64Keys.bloomFactor)
         defaults.set(metalScreen.dotMask, forKey: VC64Keys.mask)
-        defaults.set(metalScreen.scanlines, forKey: VC64Keys.scanlines)
         defaults.set(metalScreen.maskBrightness, forKey: VC64Keys.maskBrightness)
         
         // Geometry

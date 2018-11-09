@@ -28,16 +28,12 @@ class EmulatorPrefsController : UserDialogController {
     @IBOutlet weak var colorWell14: NSColorWell!
     @IBOutlet weak var colorWell15: NSColorWell!
     
-    // Texture processor
-    @IBOutlet weak var upscaler: NSPopUpButton!
-    @IBOutlet weak var filter: NSPopUpButton!
+    // Video
+    @IBOutlet weak var scanlineButton: NSButton!
     @IBOutlet weak var brightnessSlider: NSSlider!
     @IBOutlet weak var contrastSlider: NSSlider!
     @IBOutlet weak var saturationSlider: NSSlider!
     @IBOutlet weak var blurSlider: NSSlider!
-
-    // Effect engine
-    @IBOutlet weak var scanlines: NSPopUpButton!
     @IBOutlet weak var dotMask: NSPopUpButton!
     @IBOutlet weak var scanlineBrightnessSlider: NSSlider!
     @IBOutlet weak var scanlineWeightSlider: NSSlider!
@@ -61,18 +57,6 @@ class EmulatorPrefsController : UserDialogController {
     @IBOutlet weak var autoMount: NSButton!
 
     override func awakeFromNib() {
-        
-        // Check for available upscalers
-        var kernels = parent.metalScreen.upscalers
-        for i in 0 ... kernels.count - 1 {
-            upscaler.menu!.item(withTag: i)?.isEnabled = (kernels[i] != nil)
-        }
-        
-        // Check for available filters
-        kernels = parent.metalScreen.filters
-        for i in 0 ... kernels.count - 1 {
-            filter.menu!.item(withTag: i)?.isEnabled = (kernels[i] != nil)
-        }
         
         update()
     }
@@ -101,15 +85,13 @@ class EmulatorPrefsController : UserDialogController {
         colorWell15.color = c64.vic.color(15)
 
         // Texture processor
-        upscaler.selectItem(withTag: parent.metalScreen.videoUpscaler)
-        filter.selectItem(withTag: parent.metalScreen.videoFilter)
+        scanlineButton.state = parent.metalScreen.scanlinesEnabled ? .on : .off
         brightnessSlider.doubleValue = document.c64.vic.brightness()
         contrastSlider.doubleValue = document.c64.vic.contrast()
         saturationSlider.doubleValue = document.c64.vic.saturation()
         blurSlider.doubleValue = Double(parent.metalScreen.blurFactor)
 
         // Effect engine
-        scanlines.selectItem(withTag: parent.metalScreen.scanlines)
         dotMask.selectItem(withTag: parent.metalScreen.dotMask)
         scanlineBrightnessSlider.floatValue = parent.metalScreen.scanlineBrightness
         scanlineWeightSlider.floatValue = parent.metalScreen.scanlineWeight
@@ -151,16 +133,8 @@ class EmulatorPrefsController : UserDialogController {
     // Action methods (Texture processor)
     //
     
-    @IBAction func upscalerAction(_ sender: NSPopUpButton!) {
-    
-        parent.metalScreen.videoUpscaler = sender.selectedTag()
-        update()
-    }
-    
-    @IBAction func filterAction(_ sender: NSPopUpButton!) {
-    
-        track()
-        parent.metalScreen.videoFilter = sender.selectedTag()
+    @IBAction func scanlineAction(_ sender: NSButton!) {
+        parent.metalScreen.scanlinesEnabled = (sender.state == .on)
         update()
     }
     
@@ -187,8 +161,8 @@ class EmulatorPrefsController : UserDialogController {
     
     @IBAction func blurAction(_ sender: NSSlider!) {
         
-        let gaussFilter = parent.metalScreen.filters[1] as! GaussFilter
-        gaussFilter.sigma = sender.floatValue
+        let gaussFilter = parent.metalScreen.guassFilter
+        gaussFilter?.sigma = sender.floatValue
         parent.metalScreen.blurFactor = sender.floatValue
         update()
     }
@@ -201,7 +175,7 @@ class EmulatorPrefsController : UserDialogController {
     @IBAction func scanlinesAction(_ sender: NSPopUpButton!) {
         
         track("Scanlines = \(sender.selectedTag())")
-        parent.metalScreen.scanlines = sender.selectedTag()
+        parent.metalScreen.scanlinesEnabled = sender.selectedTag() == 1 ? true : false
         update()
     }
 
@@ -330,15 +304,14 @@ class EmulatorPrefsController : UserDialogController {
         c64.vic.setVideoPalette(EmulatorDefaults.palette)
 
         // Texture processor
-        parent.metalScreen.videoUpscaler = EmulatorDefaults.upscaler
-        parent.metalScreen.videoFilter = EmulatorDefaults.filter
+        parent.metalScreen.scanlinesEnabled = EmulatorDefaults.scanlines
         c64.vic.setBrightness(EmulatorDefaults.brightness)
         c64.vic.setContrast(EmulatorDefaults.contrast)
         c64.vic.setSaturation(EmulatorDefaults.saturation)
         parent.metalScreen.blurFactor = EmulatorDefaults.blur
         
         // Effect engine
-        parent.metalScreen.scanlines = EmulatorDefaults.scanlines
+        parent.metalScreen.scanlinesEnabled = EmulatorDefaults.scanlines
         parent.metalScreen.dotMask = EmulatorDefaults.dotMask
         parent.metalScreen.scanlineBrightness = EmulatorDefaults.scanlineBrightness
         parent.metalScreen.scanlineWeight = EmulatorDefaults.scanlineWeight

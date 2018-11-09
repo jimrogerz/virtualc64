@@ -116,15 +116,13 @@ public extension MetalView {
         precondition(device != nil)
         precondition(library != nil)
         
-        blurFilter = GaussFilter.init(width: 512, height: 512, device: device!, library: library, sigma: 1.0)
-        
         // Build upscalers
-        upscalers[0] = BypassUpscaler.init(width: 2048, height: 2048, device: device!, library: library)
-        upscalers[1] = ScanlineUpscaler.init(width: 2048, height: 2048, device: device!, library: library)
+        bypassUpscaler = BypassUpscaler.init(width: 2048, height: 2048, device: device!, library: library)
+        scanlineUpscaler = ScanlineUpscaler.init(width: 2048, height: 2048, device: device!, library: library)
 
         // Build filters
-        filters[0] = BypassFilter.init(width: 2048, height: 2048, device: device!, library: library)
-        filters[1] = GaussFilter.init(width: 2048, height: 2048, device: device!, library: library, sigma: 1.0)
+        blurFilter = GaussFilter.init(width: 512, height: 512, device: device!, library: library, sigma: 1.0)
+        guassFilter = GaussFilter.init(width: 2048, height: 2048, device: device!, library: library, sigma: 1.0)
     }
     
     func buildBuffers() {
@@ -185,7 +183,7 @@ public extension MetalView {
     
     func fillFragmentShaderUniforms(_ buffer: MTLBuffer?) {
         
-        var _s = scanlines
+        var _s = 0  // TODO remove
         var _sb = scanlineBrightness
         var _sw = scanlineWeight
         var _bf = bloomFactor

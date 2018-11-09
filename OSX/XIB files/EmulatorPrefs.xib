@@ -36,15 +36,15 @@
                 <outlet property="eyeXSlider" destination="Ghc-gB-6Bk" id="z2T-Yv-E1v"/>
                 <outlet property="eyeYSlider" destination="Fff-Rw-YU3" id="u4A-lE-c7u"/>
                 <outlet property="eyeZSlider" destination="svW-5Y-UKa" id="ArX-qM-Rtj"/>
-                <outlet property="filter" destination="GFQ-XE-Kwn" id="baa-3N-ofh"/>
                 <outlet property="maskBrightnessSlider" destination="zx7-mh-HWZ" id="siU-DR-CZY"/>
                 <outlet property="palette" destination="04J-bH-Fgj" id="Hfh-Cb-aBN"/>
                 <outlet property="pauseInBackground" destination="1PY-YV-Vn9" id="BpP-hv-ntK"/>
                 <outlet property="saturationSlider" destination="GPi-83-wzn" id="Oyo-n0-Dyv"/>
+                <outlet property="scanline" destination="kLI-sa-iWL" id="Dtc-Zi-ZLe"/>
                 <outlet property="scanlineBrightnessSlider" destination="6bg-jg-6dI" id="O1f-ar-YPS"/>
+                <outlet property="scanlineButton" destination="kLI-sa-iWL" id="eFY-Im-Em2"/>
                 <outlet property="scanlineWeightSlider" destination="bhx-8p-6VF" id="5dB-hA-oHG"/>
                 <outlet property="snapshotInterval" destination="Hkd-vs-kdQ" id="1yS-ly-Jej"/>
-                <outlet property="upscaler" destination="PJx-0D-Gl7" id="ZM9-we-YZd"/>
                 <outlet property="warpLoad" destination="Vu3-m1-w6G" id="rln-rI-9of"/>
                 <outlet property="window" destination="FPP-sK-TR7" id="eco-qz-1dN"/>
             </connections>
@@ -69,10 +69,6 @@
                         <rect key="frame" x="20" y="189" width="585" height="5"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                     </box>
-                    <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="wg1-bd-bHY">
-                        <rect key="frame" x="20" y="383" width="580" height="5"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                    </box>
                     <box verticalHuggingPriority="750" fixedFrame="YES" boxType="separator" translatesAutoresizingMaskIntoConstraints="NO" id="Dc7-cq-Fdg">
                         <rect key="frame" x="20" y="483" width="580" height="5"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
@@ -89,16 +85,7 @@
                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jXT-wg-xSf">
                         <rect key="frame" x="21" y="460" width="144" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" title="Texture processor" id="tnY-X0-PJg">
-                            <font key="font" metaFont="systemBold"/>
-                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                    </textField>
-                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Giw-R4-yYc">
-                        <rect key="frame" x="19" y="360" width="114" height="17"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" title="Effect engine" id="LRP-dw-0hq">
+                        <textFieldCell key="cell" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" title="Video" id="tnY-X0-PJg">
                             <font key="font" metaFont="systemBold"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -168,66 +155,6 @@
                             <action selector="brightnessAction:" target="-2" id="85k-fj-pha"/>
                         </connections>
                     </slider>
-                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="5W7-xw-pIQ">
-                        <rect key="frame" x="46" y="404" width="43" height="17"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" alignment="right" title="Blur:" id="E4K-5N-oT0">
-                            <font key="font" metaFont="system"/>
-                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                    </textField>
-                    <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XfY-TW-vCB">
-                        <rect key="frame" x="26" y="434" width="63" height="17"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" refusesFirstResponder="YES" sendsActionOnEndEditing="YES" alignment="right" title="Upscaler:" id="P6Z-Hc-FCG">
-                            <font key="font" metaFont="system"/>
-                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
-                        </textFieldCell>
-                    </textField>
-                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GFQ-XE-Kwn">
-                        <rect key="frame" x="90" y="397" width="187" height="26"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                        <popUpButtonCell key="cell" type="push" title="None" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" refusesFirstResponder="YES" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" autoenablesItems="NO" selectedItem="72g-g5-lh0" id="GuN-E2-8kC">
-                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu"/>
-                            <menu key="menu" title="OtherViews" autoenablesItems="NO" id="ZHY-Jf-Mks">
-                                <items>
-                                    <menuItem title="None" state="on" id="72g-g5-lh0">
-                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                    </menuItem>
-                                    <menuItem title="Gaussian" tag="1" id="XGk-ZJ-WU0">
-                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                    </menuItem>
-                                </items>
-                            </menu>
-                        </popUpButtonCell>
-                        <connections>
-                            <action selector="filterAction:" target="-2" id="jbb-Ik-DFf"/>
-                        </connections>
-                    </popUpButton>
-                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PJx-0D-Gl7">
-                        <rect key="frame" x="91" y="427" width="186" height="26"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                        <popUpButtonCell key="cell" type="push" title="None" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" refusesFirstResponder="YES" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" autoenablesItems="NO" selectedItem="6p3-rD-cKA" id="FY3-L4-r3C">
-                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu"/>
-                            <menu key="menu" title="OtherViews" autoenablesItems="NO" id="Aar-D4-8q3">
-                                <items>
-                                    <menuItem title="None" state="on" id="6p3-rD-cKA">
-                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                    </menuItem>
-                                    <menuItem title="Scanline" tag="1" id="vlI-bc-gRl">
-                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                    </menuItem>
-                                </items>
-                            </menu>
-                        </popUpButtonCell>
-                        <connections>
-                            <action selector="upscalerAction:" target="-2" id="aM3-yE-6KU"/>
-                        </connections>
-                    </popUpButton>
                     <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0Bb-IP-wG8">
                         <rect key="frame" x="19" y="301" width="70" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
@@ -465,9 +392,9 @@ DQ
                         </connections>
                     </button>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zI9-Kk-MMf">
-                        <rect key="frame" x="292" y="298" width="92" height="23"/>
+                        <rect key="frame" x="305" y="298" width="67" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                        <textFieldCell key="cell" controlSize="mini" selectable="YES" alignment="center" title="SCANLINE BRIGHTNESS" id="gUN-VX-av3">
+                        <textFieldCell key="cell" controlSize="mini" selectable="YES" alignment="center" title="BLOOM BRIGHTNESS" id="gUN-VX-av3">
                             <font key="font" metaFont="miniSystem"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -673,6 +600,17 @@ Gw
                             <action selector="blurAction:" target="-2" id="sjZ-ph-rwo"/>
                         </connections>
                     </slider>
+                    <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kLI-sa-iWL">
+                        <rect key="frame" x="22" y="432" width="80" height="18"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
+                        <buttonCell key="cell" type="check" title="Scanlines" bezelStyle="regularSquare" imagePosition="left" refusesFirstResponder="YES" state="on" inset="2" id="2h1-Mw-Zf8">
+                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                            <font key="font" metaFont="system"/>
+                            <connections>
+                                <action selector="scanlineAction:" target="-2" id="Nu1-4c-VpP"/>
+                            </connections>
+                        </buttonCell>
+                    </button>
                 </subviews>
             </view>
             <connections>

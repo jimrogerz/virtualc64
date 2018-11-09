@@ -89,16 +89,19 @@ public class MetalView: MTKView {
     var depthTexture: MTLTexture! = nil
 
     // Array holding all available upscalers
-    var upscalers = [ComputeKernel?](repeating: nil, count: 2)
+    var scanlineUpscaler: ScanlineUpscaler! = nil
  
-    // Array holding all available filters
-    var filters = [ComputeKernel?](repeating: nil, count: 2)
+    // Array holding all available upscalers
+    var bypassUpscaler: BypassUpscaler! = nil
+    
+    // TODO rename
+    var guassFilter: GaussFilter! = nil
     
     /// Filter for vertical blur stage
     var blurFilter: GaussFilter! = nil
     
     // Shader parameters
-    var scanlines = EmulatorDefaults.scanlines
+    var scanlinesEnabled = EmulatorDefaults.scanlines
     var scanlineBrightness = EmulatorDefaults.scanlineBrightness
     var scanlineWeight = EmulatorDefaults.scanlineWeight
     var bloomFactor = EmulatorDefaults.bloomFactor
@@ -107,10 +110,7 @@ public class MetalView: MTKView {
     
     var blurFactor = EmulatorDefaults.blur {
         didSet {
-            if (1 < filters.count && filters[1] != nil) {
-                let gaussFilter = filters[1] as! GaussFilter
-                gaussFilter.sigma = blurFactor
-            }
+            guassFilter?.sigma = blurFactor
         }
     }
     
@@ -139,27 +139,7 @@ public class MetalView: MTKView {
         
     /// Texture cut-out (normalized)
     var textureRect = CGRect.init(x: 0.0, y: 0.0, width: 0.0, height: 0.0)
- 
-    /// Currently selected texture upscaler
-    var videoUpscaler = EmulatorDefaults.upscaler {
-        didSet {
-            if videoUpscaler >= upscalers.count || upscalers[videoUpscaler] == nil {
-                track("Sorry, the selected GPU upscaler is unavailable.")
-                videoUpscaler = 0
-            }
-        }
-    }
 
-    // Currently selected texture filter
-    var videoFilter = EmulatorDefaults.filter {
-        didSet {
-            if videoFilter >= filters.count || filters[videoFilter] == nil {
-                track("Sorry, the selected GPU filter is unavailable.")
-                videoFilter = 0
-            }
-        }
-    }
-    
     //! If true, no GPU drawing is performed (for performance profiling olny)
     var enableMetal = false
     
@@ -278,24 +258,6 @@ public class MetalView: MTKView {
                                 bytesPerImage: imageBytes)
     }
     
-    //! Returns the compute kernel of the currently selected pixel upscaler
-    func currentUpscaler() -> ComputeKernel {
-    
-        precondition(videoUpscaler < upscalers.count)
-        precondition(upscalers[0] != nil)
-        
-        return upscalers[videoUpscaler]!
-    }
-    
-    //! Returns the compute kernel of the currently selected texture filer
-    func currentFilter() -> ComputeKernel {
-        
-        precondition(videoFilter < filters.count)
-        precondition(filters[0] != nil)
-        
-        return filters[videoFilter]!
-    }
-    
     func startFrame() {
     
         commandBuffer = queue.makeCommandBuffer()
@@ -305,8 +267,8 @@ public class MetalView: MTKView {
         fillFragmentShaderUniforms(uniformFragment)
         
         // Upscale the C64 texture
-        let upscaler = currentUpscaler()
-        upscaler.apply(commandBuffer: commandBuffer,
+        let upscaler = scanlinesEnabled ? scanlineUpscaler : bypassUpscaler
+        upscaler!.apply(commandBuffer: commandBuffer,
                        source: emulatorTexture,
                        target: upscaledTexture)
     
@@ -315,9 +277,8 @@ public class MetalView: MTKView {
                         source: emulatorTexture,
                         target: blurredTexture)
         
-        // Filter the upscaled texture (apply blur effect)
-        let filter = currentFilter()
-        filter.apply(commandBuffer: commandBuffer,
+        // Apply blur effect
+        guassFilter.apply(commandBuffer: commandBuffer,
                      source: upscaledTexture,
                      target: filteredTexture)
        
@@ -339,7 +300,7 @@ public class MetalView: MTKView {
         commandEncoder.setDepthStencilState(depthState)
         commandEncoder.setFragmentTexture(bgTexture, index: 0)
         commandEncoder.setFragmentTexture(blurredTexture, index: 1)
-        commandEncoder.setFragmentSamplerState(filter.getsampler(), index: 0)
+        commandEncoder.setFragmentSamplerState(guassFilter?.getsampler(), index: 0)
         commandEncoder.setFragmentBuffer(uniformFragment, offset: 0, index: 0)
         commandEncoder.setVertexBuffer(positionBuffer, offset: 0, index: 0)
     }
