@@ -14,7 +14,7 @@ struct EmulatorDefaults {
     static let contrast = Double(100.0)
     static let saturation = Double(50.0)
     static let blur = Float(1.5)
-    static let scanlinesEnabled = true
+    static let scanlineBrightness = Float(0.0)
     static let dotMask = 1
     static let bloomBrightness = Float(0.5)
     static let bloomRadius = Float(1.0)

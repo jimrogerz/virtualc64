@@ -124,15 +124,23 @@ kernel void bypassupscaler(texture2d<half, access::read>  inTexture   [[ texture
     outTexture.write(result, gid);
 }
 
+struct CrtParameters {
+    float scanlineWeight;
+};
+
 //
 // Scanline upscaler
 //
 //
 kernel void scanline_upscaler(texture2d<half, access::read>  inTexture   [[ texture(0) ]],
                               texture2d<half, access::write> outTexture  [[ texture(1) ]],
+                              constant CrtParameters         &params     [[ buffer(0) ]],
                               uint2                          gid         [[ thread_position_in_grid ]])
 {
-    half4 color = (gid.y % SCALE_FACTOR) >= SCALE_FACTOR / 2 ? inTexture.read(uint2(gid.x / SCALE_FACTOR, gid.y / SCALE_FACTOR)) : half4(0, 0, 0, 0);
+    half4 color = inTexture.read(uint2(gid.x / SCALE_FACTOR, gid.y / SCALE_FACTOR));
+    if ((gid.y % SCALE_FACTOR) >= SCALE_FACTOR / 2) {
+        color *= params.scanlineWeight;
+    }
     outTexture.write(color, gid);
 }
 

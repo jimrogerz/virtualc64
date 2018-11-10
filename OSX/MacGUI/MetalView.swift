@@ -91,21 +91,23 @@ public class MetalView: MTKView {
     // Array holding all available upscalers
     var scanlineUpscaler: ScanlineUpscaler! = nil
  
-    // Array holding all available upscalers
-    var bypassUpscaler: BypassUpscaler! = nil
-    
-    // TODO rename
+    // Blur filter used for emulator texture and scanlines
     var guassFilter: GaussFilter! = nil
     
-    /// Filter for vertical blur stage
-    var blurFilter: GaussFilter! = nil
+    /// Blur filter used for blooming
+    var bloomFilter: GaussFilter! = nil
     
     // Shader parameters
-    var scanlinesEnabled = EmulatorDefaults.scanlinesEnabled
     var bloomBrightness = EmulatorDefaults.bloomBrightness
     var bloomFactor = EmulatorDefaults.bloomFactor
     var dotMask = EmulatorDefaults.dotMask
     var maskBrightness = EmulatorDefaults.maskBrightness
+    
+    var scanlineBrightness = EmulatorDefaults.scanlineBrightness {
+        didSet {
+            scanlineUpscaler?.setScanlineWeight(scanlineBrightness)
+        }
+    }
     
     var blurFactor = EmulatorDefaults.blur {
         didSet {
@@ -115,7 +117,7 @@ public class MetalView: MTKView {
     
     var bloomRadius = EmulatorDefaults.bloomRadius {
         didSet {
-            blurFilter?.sigma = bloomRadius
+            bloomFilter?.sigma = bloomRadius
         }
     }
     
@@ -272,13 +274,12 @@ public class MetalView: MTKView {
         fillFragmentShaderUniforms(uniformFragment)
         
         // Upscale the C64 texture
-        let upscaler = scanlinesEnabled ? scanlineUpscaler : bypassUpscaler
-        upscaler!.apply(commandBuffer: commandBuffer,
+        scanlineUpscaler!.apply(commandBuffer: commandBuffer,
                        source: emulatorTexture,
                        target: upscaledTexture)
     
         // Blur emulator texture
-        blurFilter.apply(commandBuffer: commandBuffer,
+        bloomFilter.apply(commandBuffer: commandBuffer,
                         source: emulatorTexture,
                         target: blurredTexture)
         

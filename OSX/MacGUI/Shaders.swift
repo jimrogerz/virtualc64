@@ -115,25 +115,28 @@ class ComputeKernel : NSObject {
 // Upscalers
 //
 
-class BypassUpscaler : ComputeKernel {
-    
-    convenience init?(width: Int, height: Int, device: MTLDevice, library: MTLLibrary) {
-        
-        self.init(name: "bypassupscaler", width: width, height: height, device: device, library: library)
-        
-        // Replace default texture sampler
-        sampler = samplerNearest
-    }
-}
-
 class ScanlineUpscaler : ComputeKernel {
+    
+    private var crtParameters: CrtParameters!
+    
+    struct CrtParameters {
+        var scanlineWeight: Float
+    }
+    
+    func setScanlineWeight(_ value : Float) {
+        crtParameters.scanlineWeight = value
+    }
     
     convenience init?(width: Int, height: Int, device: MTLDevice, library: MTLLibrary)
     {
         self.init(name: "scanline_upscaler", width: width, height: height, device: device, library: library)
-        
+        crtParameters = CrtParameters.init(scanlineWeight: 0.0)
         // Replace default texture sampler
         sampler = samplerNearest
+    }
+    
+    override func configureComputeCommandEncoder(encoder: MTLComputeCommandEncoder) {
+        encoder.setBytes(&crtParameters, length: MemoryLayout<CrtParameters>.stride, index: 0);
     }
 }
 

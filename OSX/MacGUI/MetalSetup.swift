@@ -117,11 +117,10 @@ public extension MetalView {
         precondition(library != nil)
         
         // Build upscalers
-        bypassUpscaler = BypassUpscaler.init(width: 2048, height: 2048, device: device!, library: library)
         scanlineUpscaler = ScanlineUpscaler.init(width: 2048, height: 2048, device: device!, library: library)
 
         // Build filters
-        blurFilter = GaussFilter.init(width: 512, height: 512, device: device!, library: library, sigma: 1.0)
+        bloomFilter = GaussFilter.init(width: 512, height: 512, device: device!, library: library, sigma: 1.0)
         guassFilter = GaussFilter.init(width: 2048, height: 2048, device: device!, library: library, sigma: 1.0)
     }
     

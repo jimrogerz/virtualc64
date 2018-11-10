@@ -29,17 +29,17 @@ class EmulatorPrefsController : UserDialogController {
     @IBOutlet weak var colorWell15: NSColorWell!
     
     // Video
-    @IBOutlet weak var scanlineButton: NSButton!
     @IBOutlet weak var brightnessSlider: NSSlider!
     @IBOutlet weak var contrastSlider: NSSlider!
     @IBOutlet weak var saturationSlider: NSSlider!
     @IBOutlet weak var blurSlider: NSSlider!
     @IBOutlet weak var dotMask: NSPopUpButton!
-    @IBOutlet weak var scanlineBrightnessSlider: NSSlider!
     @IBOutlet weak var bloomRadiusSlider: NSSliderCell!
     @IBOutlet weak var bloomingSlider: NSSlider!
+    @IBOutlet weak var bloomBrightnessSlider: NSSlider!
     @IBOutlet weak var maskBrightnessSlider: NSSlider!
-
+    @IBOutlet weak var scanlineBrightnessSlider: NSSlider!
+    
     // Geometry
     @IBOutlet weak var aspectRatioButton: NSButton!
     @IBOutlet weak var eyeXSlider: NSSlider!
@@ -85,14 +85,14 @@ class EmulatorPrefsController : UserDialogController {
         colorWell15.color = c64.vic.color(15)
 
         // Video
-        scanlineButton.state = parent.metalScreen.scanlinesEnabled ? .on : .off
+        scanlineBrightnessSlider.doubleValue = Double(parent.metalScreen.scanlineBrightness)
         brightnessSlider.doubleValue = document.c64.vic.brightness()
         contrastSlider.doubleValue = document.c64.vic.contrast()
         saturationSlider.doubleValue = document.c64.vic.saturation()
         blurSlider.doubleValue = Double(parent.metalScreen.blurFactor)
-        bloomRadiusSlider.doubleValue = Double(parent.metalScreen.bloomRadius)
         dotMask.selectItem(withTag: parent.metalScreen.dotMask)
-        scanlineBrightnessSlider.floatValue = parent.metalScreen.bloomBrightness
+        bloomRadiusSlider.doubleValue = Double(parent.metalScreen.bloomRadius)
+        bloomBrightnessSlider.floatValue = parent.metalScreen.bloomBrightness
         bloomingSlider.floatValue = parent.metalScreen.bloomFactor
         maskBrightnessSlider.floatValue = parent.metalScreen.maskBrightness
 
@@ -130,12 +130,7 @@ class EmulatorPrefsController : UserDialogController {
     //
     // Action methods (Texture processor)
     //
-    
-    @IBAction func scanlineAction(_ sender: NSButton!) {
-        parent.metalScreen.scanlinesEnabled = (sender.state == .on)
-        update()
-    }
-    
+
     @IBAction func brightnessAction(_ sender: NSSlider!) {
         
         let document = parent.document as! MyDocument
@@ -170,13 +165,6 @@ class EmulatorPrefsController : UserDialogController {
     // Action methods (Effect engine)
     //
     
-    @IBAction func scanlinesAction(_ sender: NSPopUpButton!) {
-        
-        track("Scanlines = \(sender.selectedTag())")
-        parent.metalScreen.scanlinesEnabled = sender.selectedTag() == 1 ? true : false
-        update()
-    }
-
     @IBAction func dotMaskAction(_ sender: NSPopUpButton!) {
         
         track("dotMask = \(sender.selectedTag())")
@@ -191,6 +179,12 @@ class EmulatorPrefsController : UserDialogController {
         update()
     }
 
+    @IBAction func scanlineBrightnessAction(_ sender: NSSlider!) {
+        track("New scanline brightness = \(sender.doubleValue)")
+        parent.metalScreen.scanlineBrightness = sender.floatValue
+        update()
+    }
+    
     @IBAction func bloomRadiusAction(_ sender: NSSlider!) {
         
         track("New bloom radius = \(sender.doubleValue)")
@@ -301,15 +295,12 @@ class EmulatorPrefsController : UserDialogController {
         // Color synthesizer
         c64.vic.setVideoPalette(EmulatorDefaults.palette)
 
-        // Texture processor
-        parent.metalScreen.scanlinesEnabled = EmulatorDefaults.scanlinesEnabled
+        // Video
         c64.vic.setBrightness(EmulatorDefaults.brightness)
         c64.vic.setContrast(EmulatorDefaults.contrast)
         c64.vic.setSaturation(EmulatorDefaults.saturation)
+        parent.metalScreen.scanlineBrightness = EmulatorDefaults.scanlineBrightness
         parent.metalScreen.blurFactor = EmulatorDefaults.blur
-        
-        // Effect engine
-        parent.metalScreen.scanlinesEnabled = EmulatorDefaults.scanlinesEnabled
         parent.metalScreen.dotMask = EmulatorDefaults.dotMask
         parent.metalScreen.bloomBrightness = EmulatorDefaults.bloomBrightness
         parent.metalScreen.bloomRadius = EmulatorDefaults.bloomRadius
