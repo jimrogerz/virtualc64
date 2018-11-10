@@ -101,7 +101,7 @@ fragment half4 fragment_main(ProjectedVertex vert [[stage_in]],
     float4 color = texture.sample(texSampler, tc);
     float4 bloomCol = blur.sample(texSampler, tc);
     bloomCol = pow(bloomCol, uniforms.bloomFactor) * uniforms.scanlineBrightness;
-    color = max(color, bloomCol);
+    color = saturate(color + bloomCol);
     
     // Apply dot mask effect
     color *= dotMaskWeight(uniforms.mask, pixel, uniforms.maskBrightness);
