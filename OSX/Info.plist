@@ -200,19 +200,5 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
-	<key>SUAllowsAutomaticUpdates</key>
-	<string>NO</string>
-	<key>SUEnableAutomaticChecks</key>
-	<string>YES</string>
-	<key>SUEnableSystemProfiling</key>
-	<string>NO</string>
-	<key>SUFeedURL</key>
-	<string>http://dirkwhoffmann.de/virtualc64/VirtualC64Appcast.xml</string>
-	<key>SUPublicEDKey</key>
-	<string>RI5wz5tuFpBVuU/2PDNsNEBETCVMfj5+voxlIDzCamQ=</string>
-	<key>SUPublicDSAKeyFile</key>
-	<string>dsa_pub.pem</string>
-	<key>SUShowReleaseNotes</key>
-	<string>YES</string>
 </dict>
 </plist>

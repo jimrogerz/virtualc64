@@ -87,14 +87,14 @@ public extension MetalView {
         
         // Fully blurred emulator texture
         descriptor.usage = [.shaderRead, .shaderWrite]
-        blurredTexture = device?.makeTexture(descriptor: descriptor)
-        precondition(blurredTexture != nil, "Failed to create blurred texture")
+        bloomTexture = device?.makeTexture(descriptor: descriptor)
+        precondition(bloomTexture != nil, "Failed to create blurred texture")
         
         // Upscaled C64 texture
         descriptor = MTLTextureDescriptor.texture2DDescriptor(
             pixelFormat: MTLPixelFormat.rgba8Unorm,
-            width: 2048,
-            height: 2048,
+            width: 1024,
+            height: 1024,
             mipmapped: false)
         descriptor.usage = [.shaderRead, .shaderWrite, .pixelFormatView, .renderTarget]
         upscaledTexture = device?.makeTexture(descriptor: descriptor)
@@ -103,8 +103,8 @@ public extension MetalView {
         // Filtered texture (upscaled and blurred)
         descriptor = MTLTextureDescriptor.texture2DDescriptor(
             pixelFormat: MTLPixelFormat.rgba8Unorm,
-            width: 2048,
-            height: 2048,
+            width: 1024,
+            height: 1024,
             mipmapped: false)
         descriptor.usage = [.shaderRead, .shaderWrite]
         filteredTexture = device?.makeTexture(descriptor: descriptor)
@@ -117,11 +117,11 @@ public extension MetalView {
         precondition(library != nil)
         
         // Build upscalers
-        scanlineUpscaler = ScanlineUpscaler.init(width: 2048, height: 2048, device: device!, library: library)
+        scanlineUpscaler = ScanlineUpscaler.init(width: 1024, height: 1024, device: device!, library: library)
 
         // Build filters
         bloomFilter = GaussFilter.init(width: 512, height: 512, device: device!, library: library, sigma: 1.0)
-        guassFilter = GaussFilter.init(width: 2048, height: 2048, device: device!, library: library, sigma: 1.0)
+        guassFilter = GaussFilter.init(width: 1024, height: 1024, device: device!, library: library, sigma: 1.0)
     }
     
     func buildBuffers() {

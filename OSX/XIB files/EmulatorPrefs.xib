@@ -596,7 +596,7 @@ Gw
                     <slider horizontalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CFs-TV-Ufh" userLabel="Bloom Radius">
                         <rect key="frame" x="372" y="316" width="19" height="96"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                        <sliderCell key="cell" alignment="left" maxValue="10" doubleValue="10" tickMarkPosition="right" sliderType="linear" id="sm1-Mi-5xn"/>
+                        <sliderCell key="cell" alignment="left" maxValue="5" doubleValue="5" tickMarkPosition="right" sliderType="linear" id="sm1-Mi-5xn"/>
                         <connections>
                             <action selector="bloomRadiusAction:" target="-2" id="HnQ-gr-Qwb"/>
                         </connections>
