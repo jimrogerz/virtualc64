@@ -304,7 +304,7 @@ DQ
                     <slider horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6bg-jg-6dI">
                         <rect key="frame" x="493" y="317" width="19" height="96"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                        <sliderCell key="cell" continuous="YES" refusesFirstResponder="YES" alignment="left" maxValue="1" tickMarkPosition="right" sliderType="linear" id="tqB-EK-8MU"/>
+                        <sliderCell key="cell" continuous="YES" refusesFirstResponder="YES" alignment="left" maxValue="2" tickMarkPosition="right" sliderType="linear" id="tqB-EK-8MU"/>
                         <connections>
                             <action selector="bloomBrightnessAction:" target="-2" id="tUh-Jp-GtM"/>
                         </connections>
@@ -588,7 +588,7 @@ Gw
                     <slider horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="P4W-6z-69X">
                         <rect key="frame" x="321" y="317" width="19" height="96"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                        <sliderCell key="cell" continuous="YES" refusesFirstResponder="YES" alignment="left" maxValue="5" tickMarkPosition="right" sliderType="linear" id="XZu-YG-H5S"/>
+                        <sliderCell key="cell" continuous="YES" refusesFirstResponder="YES" alignment="left" maxValue="2" tickMarkPosition="right" sliderType="linear" id="XZu-YG-H5S"/>
                         <connections>
                             <action selector="blurAction:" target="-2" id="sjZ-ph-rwo"/>
                         </connections>
